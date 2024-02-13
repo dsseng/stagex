@@ -1095,7 +1095,7 @@ out/sed/index.json: \
 
 .PHONY: iputils
 iputils: out/iputils/index.json
-out/iputils/index.json:
+out/iputils/index.json: \
 	src/tools/iputils/Containerfile \
 	out/binutils/index.json \
 	out/musl/index.json \

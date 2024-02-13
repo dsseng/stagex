@@ -3,7 +3,7 @@ ENV SRC_VERIONS=20240117
 ENV SRC_SITE=https://github.com/iputils/iputils/archive/refs/tags
 ENV SRC_HASH=2c3f1f4d6f2481dec05b441de9c81d4059bdb202d4d0e98404f62ee1502bf1dc
 COPY --from=stagex/binutils . /
-# COPY --from=stagex/make . /
+COPY --from=stagex/make . /
 COPY --from=stagex/musl . /
 COPY --from=stagex/gcc . /
 
