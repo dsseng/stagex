@@ -1,0 +1,43 @@
+FROM stagex/busybox as base
+ENV SRC_VERIONS=20240117
+ENV SRC_SITE=https://github.com/iputils/iputils/archive/refs/tags
+ENV SRC_HASH=2c3f1f4d6f2481dec05b441de9c81d4059bdb202d4d0e98404f62ee1502bf1dc
+COPY --from=stagex/binutils . /
+# COPY --from=stagex/make . /
+COPY --from=stagex/musl . /
+COPY --from=stagex/gcc . /
+
+FROM base as fetch
+RUN <<-EOF
+    set -eux;
+    wget ${SRC_SITE}/iputils-${SRC_VERSION}.tar.xz;
+    echo "${SRC_HASH}  iputils-${SRC_VERSION}.tar.xz | sha256sum -c;
+EOF;
+
+FROM fetch as build
+RUN tar -xf iputils-${SRC_VERSION}.tar.xz
+WORKDIR iputils-${SRC_VERSION}
+RUN <<-EOF
+    set -eux;
+    ./configure \
+        --build=x86_64-linux-musl \
+        --host=x86_64-linux-musl \
+        --prefix=/usr \
+        --sysconfdir=/etc \
+        --mandir=/usr/share/man \
+        --infodir=/usr/share/info \
+        --enable-static-link; \
+	meson build;
+EOF
+
+FROM build as install
+USER 0:0
+RUN meson install DESTDIR=/rootfs
+COPY --from=stagex/musl . /rootfs/
+RUN find /rootfs -exec touch -hcd "@0" "{}" +
+
+FROM scratch as package
+COPY --from=install /rootfs /
+USER 100:100
+ENTRYPOINT ["/usr/bin/iputils"]
+CMD ["--version"]
