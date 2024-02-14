@@ -1,21 +1,18 @@
 FROM stagex/busybox as base
-ENV SRC_VERIONS=20240117
-ENV SRC_SITE=https://github.com/iputils/iputils/archive/refs/tags
+ENV SRC_VERSION=20240117
 ENV SRC_HASH=2c3f1f4d6f2481dec05b441de9c81d4059bdb202d4d0e98404f62ee1502bf1dc
+ENV SRC_FILE=iputils-${SRC_VERSION}.tar.xz
+ENV SRC_SITE=https://github.com/iputils/iputils/archive/refs/tags/${SRC_FILE}
 COPY --from=stagex/binutils . /
 COPY --from=stagex/make . /
 COPY --from=stagex/musl . /
 COPY --from=stagex/gcc . /
 
 FROM base as fetch
-RUN <<-EOF
-    set -eux;
-    wget ${SRC_SITE}/iputils-${SRC_VERSION}.tar.xz;
-    echo "${SRC_HASH}  iputils-${SRC_VERSION}.tar.xz | sha256sum -c;
-EOF;
+ADD --checksum=sha256:${SRC_HASH} ${SRC_SITE} .
 
 FROM fetch as build
-RUN tar -xf iputils-${SRC_VERSION}.tar.xz
+RUN tar -xf ${SRC_FILE}
 WORKDIR iputils-${SRC_VERSION}
 RUN <<-EOF
     set -eux;
