@@ -510,6 +510,16 @@ out/gzip/index.json: \
 	out/musl/index.json
 	$(call build,gzip)
 
+.PHONY: iputils
+iputils: out/iputils/index.json
+out/iputils/index.json: \
+	src/tools/iputils/Containerfile \
+	out/binutils/index.json \
+	out/musl/index.json \
+	out/gcc/index.json \
+	out/iputils/index.json
+	$(call build,tools,iputils)
+
 .PHONY: keyfork
 keyfork: out/keyfork/index.json
 out/keyfork/index.json: \
@@ -1092,16 +1102,6 @@ out/sed/index.json: \
 	out/make/index.json \
 	out/musl/index.json
 	$(call build,sed)
-
-.PHONY: iputils
-iputils: out/iputils/index.json
-out/iputils/index.json: \
-	src/tools/iputils/Containerfile \
-	out/binutils/index.json \
-	out/musl/index.json \
-	out/gcc/index.json \
-	out/iputils/index.json
-	$(call build,tools,iputils)
 
 .PHONY: sops
 sops: out/sops/index.json
