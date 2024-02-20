@@ -1,5 +1,5 @@
 FROM stagex/busybox as base
-ENV SRC_VERSION=20240117
+ENV VERSION=20240117
 ENV SRC_HASH=2c3f1f4d6f2481dec05b441de9c81d4059bdb202d4d0e98404f62ee1502bf1dc
 ENV SRC_FILE=iputils-${SRC_VERSION}.tar.xz
 ENV SRC_SITE=https://github.com/iputils/iputils/archive/refs/tags/${SRC_FILE}
