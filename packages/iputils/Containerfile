@@ -1,4 +1,4 @@
-FROM stagex/busybox as base
+FROM scratch as base
 ENV VERSION=20240117
 ENV SRC_HASH=a5d66e2997945b2541b8f780a7f5a5ec895d53a517ae1dc4f3ab762573edea9a
 ENV SRC_FILE=${VERSION}.tar.gz
@@ -8,8 +8,9 @@ FROM base as fetch
 ADD --checksum=sha256:${SRC_HASH} ${SRC_SITE} .
 
 FROM fetch as build
+COPY --from=stagex/busybox . /
 COPY --from=stagex/binutils . /
-COPY --from=stagex/make . /
+COPY --from=stagex/meson . /
 COPY --from=stagex/musl . /
 COPY --from=stagex/gcc . /
 RUN tar -xzf ${SRC_FILE}
@@ -36,7 +37,7 @@ RUN find /rootfs -exec touch -hcd "@0" "{}" +
 FROM base as test
 COPY --from=install /rootfs /
 COPY --from=stagex/binutils . /
-COPY --from=stagex/make . /
+COPY --from=stagex/meson . /
 COPY --from=stagex/musl . /
 COPY --from=stagex/gcc . /
 RUN /bin/sh <<-EOF
