@@ -10,13 +10,18 @@ ADD --checksum=sha256:${SRC_HASH} ${SRC_SITE} .
 FROM fetch as build
 COPY --from=stagex/busybox . /
 COPY --from=stagex/binutils . /
+COPY --from=stagex/gcc . /
 COPY --from=stagex/meson . /
 COPY --from=stagex/musl . /
-COPY --from=stagex/gcc . /
+COPY --from=stagex/python . /
+COPY --from=stagex/zlib . /
+# HACK: figure out why gcc package puts these in the wrong path at install time
+COPY --from=stagex/gcc /usr/lib64/* /usr/lib/
 RUN tar -xzf ${SRC_FILE}
 WORKDIR iputils-${VERSION}
 RUN --network=none <<-EOF
     set -eux;
+    ./configure
     meson env2mfile \
         --native \
         --system=linux \
@@ -59,7 +64,7 @@ RUN --network=none <<-EOF
         -Dlzma=disabled \
         -Dzlib=disabled \
         build/meson \
-        output
+        builddir
     meson compile -C output
 EOF
 
