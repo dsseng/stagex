@@ -15,17 +15,52 @@ COPY --from=stagex/musl . /
 COPY --from=stagex/gcc . /
 RUN tar -xzf ${SRC_FILE}
 WORKDIR iputils-${VERSION}
-RUN <<-EOF
+RUN --network=none <<-EOF
     set -eux;
-    ./configure \
-        --build=x86_64-linux-musl \
-        --host=x86_64-linux-musl \
+    meson env2mfile \
+        --native \
+        --system=linux \
+        --cpu-family=x86_64 \
+        --cpu=x86_64 \
+        --endian=little \
+        -o meson.cross
+    meson setup \
         --prefix=/usr \
-        --sysconfdir=/etc \
+        --libdir=/usr/lib \
+        --libexecdir=/usr/libexec \
+        --bindir=/usr/bin \
+        --sbindir=/usr/sbin \
+        --includedir=/usr/include \
+        --datadir=/usr/share \
         --mandir=/usr/share/man \
         --infodir=/usr/share/info \
-        --enable-static-link; \
-	meson build;
+        --localedir=/usr/share/locale \
+        --sysconfdir=/etc \
+        --localstatedir=/var \
+        --sharedstatedir=/var/lib \
+        --buildtype=plain \
+        --auto-features=auto \
+        --wrap-mode=nodownload \
+        --default-library=both \
+        --cross-file=meson.cross \
+        -Dbacktrace=disabled \
+        -Db_lto=false \
+        -Db_staticpic=true \
+        -Db_pie=true \
+        -Dpython.bytecompile=0 \
+        -Dwerror=false \
+        -Db_ndebug=true \
+        -Dbin_tests=false \
+        -Dbin_contrib=false \
+        -Dbin_programs=true \
+        -Dbacktrace=disabled \
+        -Dmulti_thread=enabled \
+        -Dlz4=disabled \
+        -Dlzma=disabled \
+        -Dzlib=disabled \
+        build/meson \
+        output
+    meson compile -C output
 EOF
 
 FROM build as install
