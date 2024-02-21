@@ -1,7 +1,7 @@
 FROM stagex/busybox as base
 ENV VERSION=20240117
-ENV SRC_HASH=2c3f1f4d6f2481dec05b441de9c81d4059bdb202d4d0e98404f62ee1502bf1dc
-ENV SRC_FILE=iputils-${SRC_VERSION}.tar.xz
+ENV SRC_HASH=a5d66e2997945b2541b8f780a7f5a5ec895d53a517ae1dc4f3ab762573edea9a
+ENV SRC_FILE=${VERSION}.tar.gz
 ENV SRC_SITE=https://github.com/iputils/iputils/archive/refs/tags/${SRC_FILE}
 
 FROM base as fetch
@@ -12,8 +12,8 @@ COPY --from=stagex/binutils . /
 COPY --from=stagex/make . /
 COPY --from=stagex/musl . /
 COPY --from=stagex/gcc . /
-RUN tar -xf ${SRC_FILE}
-WORKDIR iputils-${SRC_VERSION}
+RUN tar -xzf ${SRC_FILE}
+WORKDIR iputils-${VERSION}
 RUN <<-EOF
     set -eux;
     ./configure \
@@ -46,23 +46,23 @@ RUN /bin/sh <<-EOF
     PING_VERSION=$(ping -V)
     TRACEPATH_VERSION=$(tracepath -V)
 
-    if [ "${ARPING_VERION}" != "arping from iputils ${SRC_VERSION}"]; then
-        echo "Expected arping version ${SRC_VERSION} but got ${ARPING_VERSION}"
+    if [ "${ARPING_VERION}" != "arping from iputils ${VERSION}"]; then
+        echo "Expected arping version ${VERSION} but got ${ARPING_VERSION}"
         exit 1
     fi
 
-    if [ "${CLOCKDIFF_VERION}" != "arping from iputils ${SRC_VERSION}"]; then
-        echo "Expected arping version ${SRC_VERSION} but got ${CLOCKDIFF_VERSION}"
+    if [ "${CLOCKDIFF_VERION}" != "arping from iputils ${VERSION}"]; then
+        echo "Expected arping version ${VERSION} but got ${CLOCKDIFF_VERSION}"
         exit 1
     fi
 
-    if [ "${PING_VERION}" != "arping from iputils ${SRC_VERSION}"]; then
-        echo "Expected arping version ${SRC_VERSION} but got ${PING_VERSION}"
+    if [ "${PING_VERION}" != "arping from iputils ${VERSION}"]; then
+        echo "Expected arping version ${VERSION} but got ${PING_VERSION}"
         exit 1
     fi
 
-    if [ "${TRACEPATH_VERION}" != "arping from iputils ${SRC_VERSION}"]; then
-        echo "Expected arping version ${SRC_VERSION} but got ${TRACEPATH_VERSION}"
+    if [ "${TRACEPATH_VERION}" != "arping from iputils ${VERSION}"]; then
+        echo "Expected arping version ${VERSION} but got ${TRACEPATH_VERSION}"
         exit 1
     fi
 EOF
