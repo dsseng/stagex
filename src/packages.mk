@@ -513,7 +513,7 @@ out/gzip/index.json: \
 .PHONY: iputils
 iputils: out/iputils/index.json
 out/iputils/index.json: \
-	src/tools/iputils/Containerfile \
+	packages/iputils/Containerfile \
 	out/binutils/index.json \
 	out/busybox/index.json \
 	out/meson/index.json \
