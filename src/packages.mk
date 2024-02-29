@@ -516,9 +516,10 @@ out/iputils/index.json: \
 	packages/iputils/Containerfile \
 	out/binutils/index.json \
 	out/busybox/index.json \
+	out/libcap/index.json \
 	out/meson/index.json \
 	out/musl/index.json \
-	out/gcc/index.json \
+	out/gcc/index.json 
 	$(call build,iputils)
 
 .PHONY: keyfork
