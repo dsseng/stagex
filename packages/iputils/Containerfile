@@ -107,7 +107,7 @@ RUN /bin/sh <<-EOF
     fi
 EOF
 
-FROM scratch AS package
+FROM stagex/filesystem AS package
 COPY --from=install /rootfs /
 USER 100:100
 ENTRYPOINT ["/usr/bin/iputils"]

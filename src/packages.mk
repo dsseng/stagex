@@ -514,6 +514,7 @@ out/gzip/index.json: \
 iputils: out/iputils/index.json
 out/iputils/index.json: \
 	packages/iputils/Containerfile \
+	out/filesystem/index.json \
 	out/binutils/index.json \
 	out/busybox/index.json \
 	out/libcap/index.json \
