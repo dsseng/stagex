@@ -16,8 +16,6 @@ COPY --from=stagex/meson . /
 COPY --from=stagex/musl . /
 COPY --from=stagex/python . /
 COPY --from=stagex/zlib . /
-# HACK: figure out why gcc package puts these in the wrong path at install time
-COPY --from=stagex/gcc /usr/lib64/* /usr/lib/
 RUN tar -xzf ${SRC_FILE}
 WORKDIR iputils-${VERSION}
 RUN --network=none <<-EOF
