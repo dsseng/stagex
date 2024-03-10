@@ -1087,6 +1087,28 @@ out/perl/index.json: \
 	out/musl/index.json
 	$(call build,perl)
 
+.PHONY: php
+php: out/php/index.json
+out/php/index.json: \
+	packages/php/Containerfile \
+	out/autoconf/index.json \
+	out/automake/index.json \
+	out/binutils/index.json \
+	out/bison/index.json \
+	out/busybox/index.json \
+	out/filesystem/index.json \
+	out/gcc/index.json \
+	out/libxml2/index.json \
+	out/m4/index.json \
+	out/make/index.json \
+	out/musl/index.json \
+	out/perl/index.json \
+	out/pkgconf/index.json \
+	out/re2c/index.json \
+	out/sqlite3/index.json \
+	out/zlib/index.json
+	$(call build,php)
+
 .PHONY: pkgconf
 pkgconf: out/pkgconf/index.json
 out/pkgconf/index.json: \
@@ -1124,6 +1146,24 @@ out/python/index.json: \
 	out/openssl/index.json \
 	out/zlib/index.json
 	$(call build,python)
+
+.PHONY: re2c
+re2c: out/re2c/index.json
+out/re2c/index.json: \
+	packages/re2c/Containerfile \
+	out/autoconf/index.json \
+	out/automake/index.json \
+	out/binutils/index.json \
+	out/busybox/index.json \
+	out/filesystem/index.json \
+	out/gcc/index.json \
+	out/libtool/index.json \
+	out/m4/index.json \
+	out/make/index.json \
+	out/musl/index.json \
+	out/perl/index.json \
+	out/python/index.json
+	$(call build,re2c)
 
 .PHONY: rust
 rust: out/rust/index.json
@@ -1169,6 +1209,20 @@ out/sops/index.json: \
 	out/filesystem/index.json \
 	out/go/index.json
 	$(call build,sops)
+
+.PHONY: sqlite3
+sqlite3: out/sqlite3/index.json
+out/sqlite3/index.json: \
+	packages/sqlite3/Containerfile \
+	out/binutils/index.json \
+	out/busybox/index.json \
+	out/filesystem/index.json \
+	out/gcc/index.json \
+	out/linux-headers/index.json \
+	out/make/index.json \
+	out/musl/index.json \
+	out/tcl/index.json
+	$(call build,sqlite3)
 
 .PHONY: stage0
 stage0: out/stage0/index.json
@@ -1245,6 +1299,18 @@ out/tar/index.json: \
 	out/make/index.json \
 	out/musl/index.json
 	$(call build,tar)
+
+.PHONY: tcl
+tcl: out/tcl/index.json
+out/tcl/index.json: \
+	packages/tcl/Containerfile \
+	out/binutils/index.json \
+	out/busybox/index.json \
+	out/filesystem/index.json \
+	out/gcc/index.json \
+	out/make/index.json \
+	out/musl/index.json
+	$(call build,tcl)
 
 .PHONY: texinfo
 texinfo: out/texinfo/index.json
