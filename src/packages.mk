@@ -454,6 +454,15 @@ out/go/index.json: \
 	out/musl/index.json
 	$(call build,go)
 
+.PHONY: go-md2man
+go-md2man: out/go-md2man/index.json
+out/go-md2man/index.json: \
+	packages/go-md2man/Containerfile \
+	out/busybox/index.json \
+	out/ca-certificates/index.json \
+	out/go/index.json
+	$(call build,go-md2man)
+
 .PHONY: gperf
 gperf: out/gperf/index.json
 out/gperf/index.json: \
@@ -542,6 +551,7 @@ out/icu/index.json: \
 iputils: out/iputils/index.json
 out/iputils/index.json: \
 	packages/iputils/Containerfile \
+	out/filesystem/index.json \
 	out/binutils/index.json \
 	out/busybox/index.json \
 	out/filesystem/index.json \
@@ -1030,6 +1040,24 @@ out/ninja/index.json: \
 	out/openssl/index.json \
 	out/python/index.json
 	$(call build,ninja)
+
+.PHONY: nodejs
+nodejs: out/nodejs/index.json
+out/nodejs/index.json: \
+	packages/nodejs/Containerfile \
+	out/binutils/index.json \
+	out/busybox/index.json \
+	out/bzip2/index.json \
+	out/filesystem/index.json \
+	out/gcc/index.json \
+	out/linux-headers/index.json \
+	out/make/index.json \
+	out/musl/index.json \
+	out/ninja/index.json \
+	out/openssl/index.json \
+	out/python/index.json \
+	out/zlib/index.json
+	$(call build,nodejs)
 
 .PHONY: npth
 npth: out/npth/index.json

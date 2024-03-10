@@ -1,0 +1,43 @@
+FROM scratch as base
+ENV VERSION=4.9.3
+ENV SRC_HASH=37afc5bba2738c68dc24400893b99226c658cc9a2b22309f4d7abe7225d8c437
+ENV SRC_FILE=v${VERSION}.tar.gz
+ENV SRC_SITE=https://github.com/containers/podman/archive/v${VERSION}/podman-${SRC_FILE}
+
+FROM base as fetch
+ADD --checksum=sha256:${SRC_HASH} ${SRC_SITE} .
+
+FROM fetch as build
+COPY --from=stagex/busybox . /
+COPY --from=stagex/make . /
+COPY --from=stagex/musl . /
+COPY --from=stagex/go . /
+COPY --from=stagex/ca-certificates . /
+RUN tar -xvf podman-${SRC_FILE}
+WORKDIR podman-${VERSION}
+ENV PWD=/home/user/podman-${VERSION}
+ENV GOPATH=${PWD}/cache/go
+ENV GOCACHE=${PWD}/cache/
+ENV GOWORK=off
+ENV GOPROXY=https://proxy.golang.org,direct
+ENV GOSUMDB=sum.golang.org
+ENV CGO_ENABLED=0
+ENV GOHOSTOS=linux
+ENV GOHOSTARCH=amd64
+ENV GOOS=linux
+ENV CGO_CFLAGS="$CFLAGS -D_LARGEFILE64_SOURCE"
+#ENV GOFLAGS=-trimpath
+ENV BUILDTAGS="exclude_graphdriver_devicemapper seccomp apparmor libsqlite3"
+RUN mkdir -p ${GOPATH}
+RUN make -j1 podman rootlessport PREFIX=/usr GOMD2MAN="$(which go-md2man)"
+#RUN go build -o bin/podman ./cmd/podman
+
+from build as install
+RUN <<-EOF
+    mkdir -p /rootfs/usr/bin/
+    cp bin/podman /rootfs/usr/bin/
+EOF
+RUN find /rootfs -exec touch -hcd "@0" "{}" +
+
+FROM stagex/filesystem as package
+COPY --from=install /rootfs/./ /
