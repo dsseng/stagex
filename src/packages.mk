@@ -529,13 +529,18 @@ out/gzip/index.json: \
 iputils: out/iputils/index.json
 out/iputils/index.json: \
 	packages/iputils/Containerfile \
-	out/filesystem/index.json \
 	out/binutils/index.json \
 	out/busybox/index.json \
+	out/filesystem/index.json \
+	out/gcc/index.json \
 	out/libcap/index.json \
+	out/libxslt/index.json \
+	out/linux-headers/index.json \
 	out/meson/index.json \
 	out/musl/index.json \
-	out/gcc/index.json 
+	out/ninja/index.json \
+	out/python/index.json \
+	out/zlib/index.json
 	$(call build,iputils)
 
 .PHONY: keyfork
@@ -1218,7 +1223,6 @@ out/sqlite3/index.json: \
 	out/busybox/index.json \
 	out/filesystem/index.json \
 	out/gcc/index.json \
-	out/linux-headers/index.json \
 	out/make/index.json \
 	out/musl/index.json \
 	out/tcl/index.json

@@ -20,7 +20,6 @@ COPY --from=stagex/libxml2 . /
 COPY --from=stagex/re2c . /
 COPY --from=stagex/musl . /
 COPY --from=stagex/perl . /
-COPY --from=stagex/gcc . / 
 COPY --from=stagex/m4 . /
 COPY --from=stagex/libxml2 . /
 COPY --from=stagex/zlib . /

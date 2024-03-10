@@ -12,7 +12,6 @@ COPY --from=stagex/busybox . /
 COPY --from=stagex/binutils . /
 COPY --from=stagex/gcc . /
 COPY --from=stagex/tcl . /
-#COPY --from=stagex/linux-headers . /
 COPY --from=stagex/make . /
 COPY --from=stagex/musl . /
 RUN tar -xf ${SRC_FILE}
