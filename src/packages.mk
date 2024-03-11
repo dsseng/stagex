@@ -551,7 +551,6 @@ out/icu/index.json: \
 iputils: out/iputils/index.json
 out/iputils/index.json: \
 	packages/iputils/Containerfile \
-	out/filesystem/index.json \
 	out/binutils/index.json \
 	out/busybox/index.json \
 	out/filesystem/index.json \
@@ -1040,24 +1039,6 @@ out/ninja/index.json: \
 	out/openssl/index.json \
 	out/python/index.json
 	$(call build,ninja)
-
-.PHONY: nodejs
-nodejs: out/nodejs/index.json
-out/nodejs/index.json: \
-	packages/nodejs/Containerfile \
-	out/binutils/index.json \
-	out/busybox/index.json \
-	out/bzip2/index.json \
-	out/filesystem/index.json \
-	out/gcc/index.json \
-	out/linux-headers/index.json \
-	out/make/index.json \
-	out/musl/index.json \
-	out/ninja/index.json \
-	out/openssl/index.json \
-	out/python/index.json \
-	out/zlib/index.json
-	$(call build,nodejs)
 
 .PHONY: npth
 npth: out/npth/index.json
