@@ -14,7 +14,7 @@ defaults:
 jobs:
   build:
     name: Build check
-    runs-on: shell
+    runs-on: ubuntu-latest
     if: github.base_ref == 'staging' && !startsWith(github.ref, 'refs/heads/release/')
     steps:
       -
