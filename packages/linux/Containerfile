@@ -1,3 +1,5 @@
+ARG SUBPACKAGE=generic
+
 FROM scratch AS base
 ENV VERSION=6.6
 ENV SRC_HASH=d926a06c63dd8ac7df3f86ee1ffc2ce2a3b81a2d168484e76b5b389aba8e56d0
@@ -7,7 +9,7 @@ ENV SRC_SITE=http://mirrors.edge.kernel.org/pub/linux/kernel/v6.x/${SRC_FILE}
 FROM base AS fetch
 ADD --checksum=sha256:${SRC_HASH} ${SRC_SITE} .
 
-FROM fetch AS build
+FROM fetch AS prepare
 COPY --from=stagex/musl . /
 COPY --from=stagex/make . /
 COPY --from=stagex/binutils . /
@@ -55,11 +57,29 @@ RUN <<-EOF
 		! grep -q "^$conf=" .config
 	done
 	make oldconfig
+    mkdir /rootfs
+EOF
+
+FROM prepare AS build-headers
+RUN --network=none make headers
+
+FROM build-headers AS install-linux-headers
+RUN <<-EOF
+	set -eux
+	mkdir -p /rootfs/usr
+	cp -a usr/include /rootfs/usr/
+	find /rootfs/usr/include/ ! -iname "*.h" -type f -exec rm -v {} \+
+	rm -rf /rootfs/usr/include/drm
+EOF
+
+FROM prepare AS build-generic
+RUN <<-EOF
+	set -eux
 	make -j "$(nproc)" bzImage
 	make -j "$(nproc)" modules INSTALL_MOD_PATH=/rootfs
 EOF
 
-FROM build AS install
+FROM build-generic AS install-linux-generic
 RUN <<-EOF
 	set -eux
     mkdir -p /rootfs/usr/lib/modules
@@ -68,5 +88,18 @@ RUN <<-EOF
 	cp arch/x86_64/boot/bzImage /rootfs
 EOF
 
+FROM prepare AS build
+ADD ${SUBPACKAGE}.config .config
+RUN --network=none make -j "$(nproc)" bzImage
+
+FROM build AS install-linux-airgap
+RUN cp arch/x86_64/boot/bzImage
+
+FROM build AS install-linux-nitro
+RUN cp arch/x86_64/boot/bzImage
+
+FROM build AS install-linux-guest
+RUN cp arch/x86_64/boot/bzImage
+
 FROM stagex/filesystem AS package
-COPY --from=install /rootfs/. /
+COPY --from=install-${SUBPACKAGE} /rootfs/. /

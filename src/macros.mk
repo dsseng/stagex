@@ -54,6 +54,16 @@ define folder-list
 	ls -1 $(FOLDER) 2>/dev/null | while IFS= read -r f; do printf "$$f "; done
 endef
 
+define package-list
+	ls -1 packages 2>/dev/null | while IFS= read -r f; do \
+		grep -Ri "AS install-" packages/$${f}/Containerfile \
+		| sed -e 's/.*install-//g' \
+		| tr '\n' ' '; \
+		grep -Ri "AS install$$" packages/$${f}/Containerfile >/dev/null \
+		&& printf "$${f} "; \
+	done
+endef
+
 define gen-target
 out/$(1)/index.json: $(shell $(call dep-list,$(1))) $(shell find packages/$(1)) | out
 	$(call build,$(1))
@@ -65,9 +75,6 @@ define build-context-args
 	| sed -e 's/COPY --from=stagex\/\([a-z0-9._-]\+\) .*/\1/g' \
 	| uniq \
 	| while IFS= read -r package; do \
-		if [ "$$package" = "$(PACKAGE)" ]; then
-			continue; \
-		fi; \
 		printf -- ' --build-context %s=oci-layout://./out/%s' "stagex/$${package}" "$${package}"; \
 	done
 endef

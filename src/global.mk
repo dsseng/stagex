@@ -33,7 +33,7 @@ include src/macros.mk
 out:
 	mkdir out
 
-all_packages := $(shell $(call folder-list,packages))
+all_packages := $(shell $(call package-list))
 
 $(all_packages): %: out/%/index.json
 
