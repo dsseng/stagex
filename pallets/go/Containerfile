@@ -1,0 +1,20 @@
+FROM stagex/filesystem
+COPY --from=stagex/busybox . /
+COPY --from=stagex/ca-certificates . /
+COPY --from=stagex/musl . /
+COPY --from=stagex/go . /
+
+ENV GOPATH=/home/user/go
+ENV GOCACHE=/home/user/go/cache/
+ENV GOPROXY=https://proxy.golang.org,direct
+ENV GOSUMDB=sum.golang.org
+ENV GOWORK=off
+ENV GOHOSTOS=linux
+ENV GOHOSTARCH=amd64
+ENV CGO_ENABLED=0
+ENV GO_LDFLAGS="-s -w -buildid= -extldflags=-static"
+ENV GO_BUILDFLAGS="-x -v -trimpath -buildvcs=false"
+ENV GOFLAGS=${GO_BUILDFLAGS} -ldflags="${GO_LDFLAGS}"
+
+ENTRYPOINT ["/usr/bin/go"]
+CMD ["version"]

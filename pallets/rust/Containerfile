@@ -1,0 +1,16 @@
+FROM stagex/filesystem
+COPY --from=stagex/busybox . /
+COPY --from=stagex/musl . /
+COPY --from=stagex/gcc . /
+COPY --from=stagex/binutils . /
+COPY --from=stagex/llvm . /
+COPY --from=stagex/libunwind . /
+COPY --from=stagex/zlib . /
+COPY --from=stagex/rust . /
+
+ENV RUSTFLAGS='-C target-feature=+crt-static'
+ENV CARGOFLAGS='--target x86_64-unknown-linux-musl --no-default-features --locked --release'
+ENV CARGO_HOME=/home/user/cargo
+
+ENTRYPOINT ["/usr/bin/rustc"]
+CMD ["--version"]
