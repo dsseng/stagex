@@ -1,6 +1,6 @@
 FROM scratch AS base
-ENV VERSION=20230628
-ENV SRC_HASH=86876a745e3d224dcfd222ed3de465b47559e85811df2db9820ef09a9dff5cce
+ENV VERSION=20240322
+ENV SRC_HASH=None
 ENV SRC_FILE=acpica-unix-${VERSION}.tar.gz
 ENV SRC_SITE=https://downloadmirror.intel.com/783549/${SRC_FILE}
 
