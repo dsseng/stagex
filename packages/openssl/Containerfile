@@ -1,6 +1,6 @@
 FROM scratch AS base
-ENV VERSION=3.0.12
-ENV SRC_HASH=f93c9e8edde5e9166119de31755fc87b4aa34863662f67ddfcba14d0b6b69b61
+ENV VERSION=3.3.2
+ENV SRC_HASH=2e8a40b01979afe8be0bbfb3de5dc1c6709fedb46d6c89c10da114ab5fc3d281
 ENV SRC_FILE=openssl-${VERSION}.tar.gz
 ENV SRC_SITE=https://www.openssl.org/source/${SRC_FILE}
 
