@@ -1,6 +1,6 @@
 FROM scratch AS base
-ENV VERSION=1.6.0
-ENV SRC_HASH=c86e734deac330597998bfbc08da45187e6b27837e23bd91eadb320732392262
+ENV VERSION=1.10.2
+ENV SRC_HASH=None
 ENV SRC_FILE=setuptools-rust-${VERSION}.tar.gz
 ENV SRC_SITE=https://files.pythonhosted.org/packages/source/s/setuptools-rust/${SRC_FILE}
 
