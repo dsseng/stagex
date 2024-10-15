@@ -1,6 +1,6 @@
 FROM scratch AS base
-ENV VERSION=2.1.5
-ENV SRC_HASH=d283d37a890ba4c1ae73ffadf8046435c76e7bc2247bbb63c00bd1a709c6544b
+ENV VERSION=3.0.1
+ENV SRC_HASH=None
 ENV SRC_FILE=MarkupSafe-${VERSION}.tar.gz
 ENV SRC_SITE=https://files.pythonhosted.org/packages/source/M/MarkupSafe/${SRC_FILE}
 
