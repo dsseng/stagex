@@ -1,6 +1,6 @@
 FROM scratch AS base
-ENV VERSION=2.39.3
-ENV SRC_HASH=d3315ff701890f4fa1dd38ea387767fcb9e1aaeb763eb904677c03d2a7a5bdc1
+ENV VERSION=2.40.2
+ENV SRC_HASH=788a199cd6374a77ae13a953d2e06fd9650d7da4f32c39ee571699cf2d7c9b4b
 ENV SRC_FILE=util-linux-${VERSION}.tar.gz
 ENV SRC_SITE=https://codeload.github.com/util-linux/util-linux/legacy.tar.gz/v${VERSION}
 
