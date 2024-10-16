@@ -1,6 +1,6 @@
 FROM scratch AS base
-ENV VERSION=4.10.0
-ENV SRC_HASH=b0abd7c89e8fb96f98db18d86106ff1d90ab692004eb746cf6eda2682f91b3cb
+ENV VERSION=4.12.2
+ENV SRC_HASH=1a7ead55c7e559dd4dee8856e3a88b41225abfe1ce8df57b7c13915fe121ffb8
 ENV SRC_FILE=typing_extensions-${VERSION}.tar.gz
 ENV SRC_SITE=https://files.pythonhosted.org/packages/source/t/typing_extensions/${SRC_FILE}
 
