@@ -1,6 +1,6 @@
 FROM scratch AS base
-ENV VERSION=1.5.5
-ENV SRC_HASH=194708f75fe369d45dd7c15e8b3e8a7db8b49cfc5557574ca2a2e76ef12ca0ca
+ENV VERSION=1.6.1
+ENV SRC_HASH=None
 ENV SRC_FILE=ccid-${VERSION}.tar.bz2
 ENV SRC_SITE=https://ccid.apdu.fr/files/${SRC_FILE}
 
