@@ -1,7 +1,7 @@
 FROM scratch AS base
 ARG ARCH=x86_64
-ENV VERSION=2.80.0
-ENV SRC_HASH=8228a92f92a412160b139ae68b6345bd28f24434a7b5af150ebe21ff587a561d
+ENV VERSION=2.82.2
+ENV SRC_HASH=None
 ENV SRC_FILE=glib-${VERSION}.tar.xz
 ENV SRC_SITE=https://download.gnome.org/sources/glib/2.80/${SRC_FILE}
 
