@@ -1,8 +1,8 @@
 FROM scratch AS base
 #ENV VERSION=0.13.1
 #ENV SRC_HASH=1b2fa2ffd3938bb4beffe5d6146cbcb2bda996a5a4da9f31abffd8b24e07b317
-ENV VERSION=0.9.1
-ENV SRC_HASH=aeb78601f2d1aa461960b43add204cc7955667687fbcf9cdb5170f00556f117f
+ENV VERSION=0.13.1
+ENV SRC_HASH=1b2fa2ffd3938bb4beffe5d6146cbcb2bda996a5a4da9f31abffd8b24e07b317
 ENV SRC_FILE=pep517-${VERSION}.tar.gz
 ENV SRC_SITE=https://files.pythonhosted.org/packages/source/p/pep517/${SRC_FILE}
 
