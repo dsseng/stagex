@@ -28,17 +28,9 @@ Get a shell in our x86_64 Stage3 bootstrap image:
 docker run -it stagex/stage3
 ```
 
-Run a Python hello world:
-```shell
-docker run -i stagex/python -c "print('hello world')"
-```
-
 Make a hello world OCI container image with Rust:
-<--author: panekj -->
-
-```dockerfile
-FROM stagex/filesystem AS build
-COPY --from=stagex/busybox . /
+```
+FROM scratch AS build
 COPY --from=stagex/rust . /
 COPY --from=stagex/gcc . /
 COPY --from=stagex/binutils . /
@@ -47,24 +39,17 @@ COPY --from=stagex/musl . /
 COPY --from=stagex/llvm . /
 COPY --from=stagex/zlib . /
 
-ENV TMPDIR=/tmp
-WORKDIR /home/user
-ENV RUSTFLAGS="-C panic=abort -C target-feature=+crt-static"
-
-RUN /usr/bin/rustc - -o ./hello <<EOF
-fn main(){
-  println!("Hello World!");
-}
+COPY <<-EOF ./hello.rs
+  fn main(){
+    println!("Hello World!");
+  }
 EOF
+RUN ["rustc","-C","target-feature=+crt-static","-o","hello","hello.rs"]
 
 FROM scratch
-COPY --from=build /home/user/hello /hello
-COPY --from=stagex/musl . /
-COPY --from=stagex/libunwind . /
-COPY --from=stagex/gcc . /
+COPY --from=build /hello .
 ENTRYPOINT ["/hello"]
 ```
-<--author: panekj -->
 
 ### Package Management
 
