@@ -20,35 +20,29 @@ COPY --from=stagex/core-musl . /
 COPY --from=fetch . .
 
 FROM build-base AS build-mrustc
-COPY --from=stagex/core-llvm13 . /
+COPY --from=stagex/core-llvm16 . /
 ADD gcc_version.patch .
 RUN tar -xzf mrustc-${MRUSTC_VERSION}.tar.gz
-RUN mv lrvick-mrustc-* mrustc
+WORKDIR mrustc-${MRUSTC_VERSION}
 RUN <<-EOF
 	set -eux
 	export ARCH="$(uname -m)"
-	export MRUSTC_TARGET_VER=1.54
-	export RUSTC_VERSION=1.54.0
+	export MRUSTC_TARGET_VER=1.74
+	export RUSTC_VERSION=1.74.0
 	export MRUSTC_DEBUG=Expand
 	export MRUSTC_DUMP_PROCMACRO=dump_prefix
 	export RUSTC_INSTALL_BINDIR=bin
 	export OUTDIR_SUF=
 	export RUSTC_TARGET="${ARCH}-unknown-linux-musl"
-	cp rustc-1.54.0-src.tar.gz mrustc
-	cd mrustc
-	patch -p1 < ../gcc_version.patch
-	tar -xzf rustc-1.54.0-src.tar.gz
-	cd rustc-1.54.0-src
-	patch -p0 < ../rustc-1.54.0-src.patch
-	cd ..
+	cp ../rustc-1.74.0-src.tar.gz .
 	make -j "$(nproc)"
 	make -j "$(nproc)" -f minicargo.mk LIBS
 	make -j "$(nproc)" test local_tests
 	make -j "$(nproc)" -f minicargo.mk LLVM_CONFIG=/usr/bin/llvm-config output/rustc
 	make -j "$(nproc)" -f minicargo.mk LLVM_CONFIG=/usr/bin/llvm-config output/cargo
 	make -j "$(nproc)" -C run_rustc LLVM_CONFIG=/usr/bin/llvm-config
-	mkdir ../rust-1.54.0
-	cp -R run_rustc/output/prefix ../rust-1.54.0/usr
+	mkdir ../rust-1.74.0
+	cp -R run_rustc/output/prefix ../rust-1.74.0/usr
 EOF
 
 FROM build-base AS build-script
@@ -110,34 +104,9 @@ COPY <<-'EOF' build.sh
 	python3 x.py install
 EOF
 
-FROM build-script AS build-llvm13
-COPY --from=stagex/core-llvm13 . /
-COPY --from=build-mrustc /rust-1.54.0 /rust-1.54.0
-RUN sh build.sh 1.55.0 1.54.0
-RUN sh build.sh 1.56.0 1.55.0
-RUN sh build.sh 1.57.0 1.56.0
-RUN sh build.sh 1.58.0 1.57.0
-RUN sh build.sh 1.59.0 1.58.0
-RUN sh build.sh 1.60.0 1.59.0
-RUN sh build.sh 1.61.0 1.60.0
-RUN sh build.sh 1.62.0 1.61.0
-RUN sh build.sh 1.63.0 1.62.0
-RUN sh build.sh 1.64.0 1.63.0
-RUN sh build.sh 1.65.0 1.64.0
-RUN sh build.sh 1.66.0 1.65.0
-RUN sh build.sh 1.67.0 1.66.0
-RUN sh build.sh 1.68.0 1.67.0
-
 FROM build-script AS build-llvm16
 COPY --from=stagex/core-llvm16 . /
-COPY --from=stagex/core-llvm13 /usr/lib/libLLVM-13.so /usr/lib/
-COPY --from=build-llvm13 /rust-1.68.0 /rust-1.68.0
-RUN sh build.sh 1.69.0 1.68.0
-RUN sh build.sh 1.70.0 1.69.0
-RUN sh build.sh 1.71.0 1.70.0
-RUN sh build.sh 1.72.0 1.71.0
-RUN sh build.sh 1.73.0 1.72.0
-RUN sh build.sh 1.74.0 1.73.0
+COPY --from=build-mrustc /rust-1.74.0 /rust-1.74.0
 # HACK: Required by Rust 1.75.0
 # https://github.com/rust-lang/rust/issues/117885
 RUN mkdir -p $HOME/.cargo/registry/src/index.crates.io-6f17d22bba15001f/
