@@ -22,7 +22,7 @@ release="$(branch_r)"
 
 branch="release/${date}.${release}"
 
-git fetch origin/staging
+git fetch origin staging
 git checkout origin/staging
 
 gitroot="$(git rev-parse --show-toplevel)"
