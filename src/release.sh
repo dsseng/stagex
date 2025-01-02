@@ -1,5 +1,12 @@
 #!/bin/sh
 
+set -eux
+
+if ! git status --porcelain;
+  echo 'Unclean tree! Aborting!'
+  exit 1
+fi
+
 date=$(date +%Y.%m)
 
 branch_r() {
@@ -11,6 +18,23 @@ branch_r() {
   fi
 }
 
-branch="release/${date}.$(branch_r)"
+release="$(branch_r)"
 
-git checkout origin/staging -b "${branch}"
+branch="release/${date}.${release}"
+
+git fetch origin/staging
+git checkout origin/staging
+
+gitroot="$(git rev-parse --show-toplevel)"
+
+if test -d "${gitroot}/out/"
+  rm -rfi "${gitroot}/out/"
+fi
+
+make
+make digests
+
+git switch "${branch}"
+git add "${gitroot}/digests/"
+git commit -m "Update digests for ${date}.${release}"
+git push origin "${branch}"
