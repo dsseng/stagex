@@ -11,6 +11,13 @@ COPY --from=fetch . .
 RUN tar -xf groff-${VERSION}.tar.gz
 WORKDIR /groff-${VERSION}
 ENV SOURCE_DATE_EPOCH=1
+ENV CFLAGS=" \
+	-mtune=generic -march=x86-64 \
+	-g -Os -std=c99 -ffreestanding \
+	-fexcess-precision=standard -frounding-math \
+	-fno-strict-aliasing -fno-unwind-tables \
+	-fno-asynchronous-unwind-tables -ffunction-sections \ 
+	-fdata-sections -fPIC -fno-stack-protector"
 RUN --network=none <<-EOF
 	set -eux
 	./configure \
