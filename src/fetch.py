@@ -14,8 +14,8 @@ from typing import Tuple
 
 
 class ResourceFetcher(object):
-  START_TIME: 0
   def __init__(self, package_file_path: str):
+    self.start_time = 0
     self.package_file: str = package_file_path
 
   def fetch_resource(self) -> List[Tuple[str, str, str, str]]:
@@ -56,28 +56,27 @@ class ResourceFetcher(object):
 
         filepath = source_path.joinpath(file)
         if filepath.is_file():
-          if not ResourceFetcher.verify(filepath, source_info.hash):
+          if not self.verify(filepath, source_info.hash):
             failed_fetch.append((file, source_info.hash, url, "verify_existing"))
           continue
         print(f"\nDownloading: {file}")
         print(f"Mirror: {url}")
         try:
-          ResourceFetcher.download(url, filepath)
+          self.download(url, filepath)
         except:
           print("Failed downloading from mirror")
           continue
-        if not ResourceFetcher.verify(filepath, source_info.hash):
+        if not self.verify(filepath, source_info.hash):
           failed_fetch.append((file, source_info.hash, url, "verify_download"))
 
     return failed_fetch
 
-  @staticmethod
-  def download_status_hook(count: int, block_size: int, total_size: int):
+  def download_status_hook(self, count: int, block_size: int, total_size: int):
     if count == 0:
-      ResourceFetcher.START_TIME = time.time()
+      self.start_time = time.time()
       return
 
-    duration = time.time() - ResourceFetcher.START_TIME
+    duration = time.time() - self.start_time
     progress_size = int(count * block_size)
     speed = int(progress_size / (1024 * duration))
     percent = int((count * block_size * 100) / total_size)
@@ -87,8 +86,7 @@ class ResourceFetcher(object):
     )
     sys.stdout.flush()
 
-  @staticmethod
-  def download(url: str, filename: str = None):
+  def download(self, url: str, filename: str = None):
       if not filename:
           remotefile = urlopen(url)
           filename_header = remotefile.info()["Content-Disposition"]
@@ -134,6 +132,3 @@ if __name__ == "__main__":
       for fail in failed:
         print(f"\nFailed: {fail}")
       exit(1)
-
-
-
