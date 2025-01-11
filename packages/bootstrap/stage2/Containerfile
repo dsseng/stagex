@@ -9,11 +9,9 @@ ARG BUSYBOX_SOURCE
 ARG BUSYBOX_VERSION
 ARG BINUTILS_SOURCE
 ARG BINUTILS_VERSION
-ENV TARGET_ARCH=x86_64
 ENV HOST_ARCH=i386
 ENV BUILD=${HOST_ARCH}-unknown-linux-musl
 ENV HOST=${HOST_ARCH}-unknown-linux-musl
-ENV TARGET=${TARGET_ARCH}-linux-musl
 ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 ENV USER=user
 ENV HOME=/home/${USER}
@@ -29,6 +27,14 @@ ENV MUSL_DIR=${HOME}/build-musl
 WORKDIR /${HOME}
 COPY --from=fetch . .
 COPY --from=stagex/bootstrap-stage1 . /
+
+ARG TARGETARCH
+RUN --network=none <<-EOF
+    echo "export TARGET_ARCH=`echo ${TARGETARCH} | sed 's/amd64/x86_64/' | sed 's/arm64/aarch64/'`" >> /.env
+    . /.env
+    echo "export TARGET=$TARGET_ARCH-linux-musl" >> /.env
+EOF
+
 RUN --network=none <<-EOF
     set -eux
     tar -xf ${LINUX_SOURCE}
@@ -44,6 +50,7 @@ EOF
 WORKDIR /${BINUTILS_DIR}
 RUN --network=none <<-EOF
     set -eux
+    . /.env
     ../binutils-${BINUTILS_VERSION}/configure \
         --build=${BUILD} \
         --host=${HOST} \
@@ -76,6 +83,7 @@ EOF
 WORKDIR /${GCC_DIR}
 RUN --network=none <<-EOF
     set -eux
+    . /.env
     ../gcc-${GCC_VERSION}/configure \
         --build=${BUILD} \
         --host=${HOST} \
@@ -113,6 +121,7 @@ EOF
 WORKDIR /${MUSL_DIR}
 RUN --network=none <<-EOF
     set -eux
+    . /.env
     ../musl-${MUSL_VERSION}/configure \
         CC="${GCC_DIR}/gcc/xgcc -B ${GCC_DIR}/gcc" \
         LIBCC="${GCC_DIR}/${TARGET}/libgcc/libgcc.a" \
@@ -143,7 +152,7 @@ RUN make all
 WORKDIR /${HOME}/linux-${LINUX_VERSION}
 RUN --network=none <<-EOF
     set -eux
-    make ARCH=${TARGET_ARCH} headers
+    make ARCH="$(echo ${TARGETARCH} | sed 's/amd64/x86_64/')" headers
     find usr/include -name '.*' -delete
     rm usr/include/Makefile
     rm usr/include/headers_check.pl
@@ -153,6 +162,7 @@ WORKDIR /${HOME}
 COPY --from=stagex/bootstrap-stage1 . /rootfs/
 RUN <<-EOF
     set -eux
+    . /.env
     rm /rootfs/lib
     env -C build-musl make DESTDIR=/rootfs/${TARGET} install
     env -C build-gcc make DESTDIR=/rootfs/ install
