@@ -43,30 +43,20 @@ jobs:
       - name: Build and push binutils
         run: |
           make binutils PROGRESS=plain PLATFORM=linux/amd64,linux/arm64
-          env -C out/core-binutils tar -c . | docker load
-          docker tag stagex/core-binutils:2.43.1 ghcr.io/dsseng/stagex-core-binutils:2.43.1
-          docker push ghcr.io/dsseng/stagex-core-binutils:2.43.1
+          ./src/publish-pkg.sh core-binutils 2.43.1
       - name: Build and push busybox
         run: |
           make busybox PROGRESS=plain PLATFORM=linux/amd64,linux/arm64
-          env -C out/core-busybox tar -c . | docker load
-          docker tag stagex/core-busybox:1.36.1 ghcr.io/dsseng/stagex-core-busybox:1.36.1
-          docker push ghcr.io/dsseng/stagex-core-busybox:1.36.1
+          ./src/publish-pkg.sh core-busybox 1.36.1
       - name: Build and push gcc
         run: |
           make gcc PROGRESS=plain PLATFORM=linux/amd64,linux/arm64
-          env -C out/core-gcc tar -c . | docker load
-          docker tag stagex/core-gcc:13.1.0 ghcr.io/dsseng/stagex-core-gcc:13.1.0
-          docker push ghcr.io/dsseng/stagex-core-gcc:13.1.0
+          ./src/publish-pkg.sh core-gcc 13.1.0
       - name: Build and push make
         run: |
           make make PROGRESS=plain PLATFORM=linux/amd64,linux/arm64
-          env -C out/core-make tar -c . | docker load
-          docker tag stagex/core-make:4.4 ghcr.io/dsseng/stagex-core-make:4.4
-          docker push ghcr.io/dsseng/stagex-core-make:4.4
+          ./src/publish-pkg.sh core-make 4.4
       - name: Build and push musl
         run: |
           make musl PROGRESS=plain PLATFORM=linux/amd64,linux/arm64
-          env -C out/core-musl tar -c . | docker load
-          docker tag stagex/core-musl:1.2.4 ghcr.io/dsseng/stagex-core-musl:1.2.4
-          docker push ghcr.io/dsseng/stagex-core-musl:1.2.4
+          ./src/publish-pkg.sh core-musl 1.2.4

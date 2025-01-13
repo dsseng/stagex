@@ -48,24 +48,16 @@ jobs:
       - name: Build and push diffutils
         run: |
           make diffutils PROGRESS=plain PLATFORM=linux/amd64,linux/arm64
-          env -C out/core-diffutils tar -c . | docker load
-          docker tag stagex/core-diffutils:3.10 ghcr.io/dsseng/stagex-core-diffutils:3.10
-          docker push ghcr.io/dsseng/stagex-core-diffutils:3.10
+          ./src/publish-pkg.sh core-diffutils 3.10
       - name: Build and push go
         run: |
           make go PROGRESS=plain PLATFORM=linux/amd64,linux/arm64
-          env -C out/core-go tar -c . | docker load
-          docker tag stagex/core-go:1.23.1 ghcr.io/dsseng/stagex-core-go:1.23.1
-          docker push ghcr.io/dsseng/stagex-core-go:1.23.1
+          ./src/publish-pkg.sh core-go 1.23.1
       - name: Build and push perl
         run: |
           make perl PROGRESS=plain PLATFORM=linux/amd64,linux/arm64
-          env -C out/core-perl tar -c . | docker load
-          docker tag stagex/core-perl:5.38.0 ghcr.io/dsseng/stagex-core-perl:5.38.0
-          docker push ghcr.io/dsseng/stagex-core-perl:5.38.0
+          ./src/publish-pkg.sh core-perl 5.38.0
       - name: Build and push texinfo
         run: |
           make texinfo PROGRESS=plain PLATFORM=linux/amd64,linux/arm64
-          env -C out/core-texinfo tar -c . | docker load
-          docker tag stagex/core-texinfo:7.1 ghcr.io/dsseng/stagex-core-texinfo:7.1
-          docker push ghcr.io/dsseng/stagex-core-texinfo:7.1
+          ./src/publish-pkg.sh core-texinfo 7.1

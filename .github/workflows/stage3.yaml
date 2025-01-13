@@ -42,12 +42,8 @@ jobs:
       - name: Build and push stage3
         run: |
           make stage3 PROGRESS=plain PLATFORM=linux/amd64,linux/arm64
-          env -C out/bootstrap-stage3 tar -c . | docker load
-          docker tag stagex/bootstrap-stage3:latest ghcr.io/dsseng/stagex-bootstrap-stage3:latest
-          docker push ghcr.io/dsseng/stagex-bootstrap-stage3:latest
+          ./src/publish-pkg.sh bootstrap-stage3 latest
       - name: Build and push filesystem
         run: |
           make filesystem PROGRESS=plain PLATFORM=linux/amd64,linux/arm64
-          env -C out/core-filesystem tar -c . | docker load
-          docker tag stagex/core-filesystem:latest ghcr.io/dsseng/stagex-core-filesystem:latest
-          docker push ghcr.io/dsseng/stagex-core-filesystem:latest
+          ./src/publish-pkg.sh core-filesystem latest
